@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top portal-navbar" th:fragment="mainNav">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" th:href="@{/}">Sri Lanka Financial Tools</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'home'} ? 'active'" th:href="@{/}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'salary-tax'} ? 'active'" th:href="@{/salary-tax-calculator-sri-lanka-2026}">Salary Tax</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'vehicle-duty'} ? 'active'" th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Vehicle Duty</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'epf'} ? 'active'" th:href="@{/epf-maturity-calculator-sri-lanka}">EPF</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'home-loan'} ? 'active'" th:href="@{/home-loan-calculator-sri-lanka}">Home Loan</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'blog'} ? 'active'" th:href="@{/blog}">Blog</a></li>
+                <li class="nav-item"><a class="nav-link" th:classappend="${activePage == 'contact'} ? 'active'" th:href="@{/contact}">Contact</a></li>
+            </ul>
+            <div class="portal-language-switcher ms-lg-3 mt-2 mt-lg-0" role="group" aria-label="Language Switcher">
+                <button type="button" class="btn btn-sm portal-lang-btn" id="lang-btn-en" data-lang="en" aria-pressed="true">English</button>
+                <button type="button" class="btn btn-sm portal-lang-btn" id="lang-btn-si" data-lang="si" aria-pressed="false">සිංහල</button>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

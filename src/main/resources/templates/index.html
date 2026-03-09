@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold mb-3">Sri Lanka Financial Tools Portal</h1>
+                <p class="lead mb-0">SEO-ready, mobile-friendly calculators for Sri Lanka salary tax 2026, vehicle import duty, EPF maturity, and home loan EMI planning.</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-0 bg-white text-dark p-3">
+                    <h2 class="h5 mb-2">Quick Access</h2>
+                    <ul class="mb-0">
+                        <li><a th:href="@{/salary-tax-calculator-sri-lanka-2026}">Salary Tax Calculator 2026</a></li>
+                        <li><a th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Vehicle Import Duty Calculator</a></li>
+                        <li><a th:href="@{/epf-maturity-calculator-sri-lanka}">EPF Maturity Calculator</a></li>
+                        <li><a th:href="@{/home-loan-calculator-sri-lanka}">Home Loan EMI Calculator</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card glass-card h-100 p-3">
+                <h2 class="h5">Salary Tax 2026</h2>
+                <p>Estimate annual tax, monthly PAYE deduction, and net monthly salary based on progressive slabs.</p>
+                <a class="btn btn-primary mt-auto" th:href="@{/salary-tax-calculator-sri-lanka-2026}">Open Tool</a>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card glass-card h-100 p-3">
+                <h2 class="h5">Vehicle Import Duty</h2>
+                <p>Calculate customs duty, PAL, excise, and VAT for imported cars, SUVs, and vans.</p>
+                <a class="btn btn-primary mt-auto" th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Open Tool</a>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card glass-card h-100 p-3">
+                <h2 class="h5">EPF Maturity</h2>
+                <p>Project long-term EPF growth using employee and employer contribution rates and annual compounding.</p>
+                <a class="btn btn-primary mt-auto" th:href="@{/epf-maturity-calculator-sri-lanka}">Open Tool</a>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card glass-card h-100 p-3">
+                <h2 class="h5">Home Loan EMI</h2>
+                <p>Compute monthly EMI, total interest outflow, and repayment amount before taking a mortgage.</p>
+                <a class="btn btn-primary mt-auto" th:href="@{/home-loan-calculator-sri-lanka}">Open Tool</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

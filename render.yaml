@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: sri-lanka-financial-tools-portal
+    env: java
+    plan: free
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -Dserver.port=$PORT -jar target/sri-lanka-financial-tools-portal-1.0.0.jar
+    envVars:
+      - key: APP_BASE_URL
+        value: https://sri-lanka-financial-tools-portal.onrender.com

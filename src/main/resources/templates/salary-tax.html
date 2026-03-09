@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Sri Lanka Salary Tax Calculator 2026</h1>
+        <p class="mb-0">Calculate annual taxable income, total tax payable, monthly deduction, and average net monthly salary in seconds.</p>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-lg-5">
+            <div class="card glass-card p-4">
+                <h2 class="h4 section-title mb-3">Enter Income Details</h2>
+                <form th:action="@{/salary-tax-calculator-sri-lanka-2026}" th:object="${salaryTaxRequest}" method="post" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Monthly Salary (LKR)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{monthlySalary}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('monthlySalary')}" th:errors="*{monthlySalary}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Annual Bonus (LKR, Optional)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{annualBonus}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('annualBonus')}" th:errors="*{annualBonus}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Other Allowances (LKR, Optional)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{otherAllowances}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('otherAllowances')}" th:errors="*{otherAllowances}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Calculate Tax</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card result-card p-4 mb-4" th:if="${result != null}">
+                <h2 class="h4 mb-3">Tax Summary</h2>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="small">Annual Taxable Income</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.annualTaxableIncome, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Total Tax Payable</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.totalTaxPayable, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Monthly Tax Deduction</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.monthlyTaxDeduction, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Average Net Monthly Salary</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.netMonthlySalary, 1, 2)}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result != null}">
+                <h3 class="h5 section-title mb-3">Tax Breakdown by Slab</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th>Slab</th>
+                            <th>Taxable Amount (LKR)</th>
+                            <th>Rate</th>
+                            <th>Tax (LKR)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${result.breakdown}">
+                            <td th:text="${item.slabLabel}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.taxableAmount, 1, 2)}"></td>
+                            <td th:text="${item.ratePercentage + '%'}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.taxAmount, 1, 2)}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result == null}">
+                <h2 class="h5 section-title">Tax Result Preview</h2>
+                <p class="mb-0">Submit your salary details to view the full breakdown and monthly deduction estimate.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card info-card p-4 mt-4">
+        <h2 class="section-title h4">How It Works</h2>
+        <p>The calculator annualizes your income (monthly salary x 12 + bonus + allowances), then applies progressive slabs from 0% to 36% and computes tax per band.</p>
+
+        <h2 class="section-title h4 mt-4">Current Sri Lanka Tax Rules</h2>
+        <p>This tool uses a practical 2026 progressive slab model: first LKR 1,200,000 at 0%, followed by higher rates of 6%, 12%, 18%, 24%, 30%, and 36% for higher income bands.</p>
+
+        <h2 class="section-title h4 mt-4">FAQ</h2>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Does this include non-cash benefits?</h3>
+            <p class="mb-0">No. Only salary, annual bonus, and other cash allowances entered in the form are considered.</p>
+        </div>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Why is monthly net salary an average?</h3>
+            <p class="mb-0">Bonus and allowance totals are spread across 12 months to provide a clear monthly planning number.</p>
+        </div>
+        <div class="faq-item">
+            <h3 class="h6">Is this a legal filing tool?</h3>
+            <p class="mb-0">No. It is an estimate tool. Always confirm filing amounts with current Inland Revenue guidance.</p>
+        </div>
+    </section>
+
+    <section class="internal-links mt-4">
+        <h2 class="h5 section-title">Explore Other Sri Lanka Calculators</h2>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Vehicle Import Duty</a>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/epf-maturity-calculator-sri-lanka}">EPF Maturity</a>
+        <a class="btn btn-outline-primary mb-2" th:href="@{/home-loan-calculator-sri-lanka}">Home Loan EMI</a>
+    </section>
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does the Sri Lanka Salary Tax Calculator 2026 work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It annualizes salary, bonus, and allowances, then applies progressive tax slabs and shows total annual and monthly tax."}
+    },
+    {
+      "@type": "Question",
+      "name": "Does this calculator replace tax filing advice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It provides an estimate for planning and should be validated against current official tax guidance."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can I enter zero for bonus and allowances?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Both fields are optional and default to zero if left blank."}
+    }
+  ]
+}
+</script>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

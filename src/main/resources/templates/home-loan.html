@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Sri Lanka Home Loan EMI Calculator</h1>
+        <p class="mb-0">Calculate monthly EMI, total interest payable, and total repayment using standard amortization formula.</p>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-lg-5">
+            <div class="card glass-card p-4">
+                <h2 class="h4 section-title mb-3">Loan Inputs</h2>
+                <form th:action="@{/home-loan-calculator-sri-lanka}" th:object="${homeLoanRequest}" method="post" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Loan Amount (LKR)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{loanAmount}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('loanAmount')}" th:errors="*{loanAmount}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Annual Interest Rate (%)</label>
+                        <input type="number" min="0" max="40" step="0.01" class="form-control" th:field="*{interestRate}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('interestRate')}" th:errors="*{interestRate}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Loan Tenure (Years)</label>
+                        <input type="number" min="1" max="40" class="form-control" th:field="*{loanTenureYears}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('loanTenureYears')}" th:errors="*{loanTenureYears}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Calculate EMI</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card result-card p-4" th:if="${result != null}">
+                <h2 class="h4 mb-3">Loan Repayment Summary</h2>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <div class="small">Monthly EMI</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.emi, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="small">Total Interest</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.totalInterestPayable, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="small">Total Repayment</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.totalRepayment, 1, 2)}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result == null}">
+                <h2 class="h5 section-title">EMI Result Preview</h2>
+                <p class="mb-0">Enter loan amount, rate, and tenure to get instant repayment projections.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card info-card p-4 mt-4">
+        <h2 class="section-title h4">How It Works</h2>
+        <p>This calculator uses the standard EMI formula with monthly rate and tenure in months to estimate a fixed monthly installment.</p>
+
+        <h2 class="section-title h4 mt-4">Current Sri Lanka Tax Rules</h2>
+        <p>Mortgage-related tax treatment, housing incentives, and lending rates can change over time. Use this as a planning tool and compare with your bank's current schedule.</p>
+
+        <h2 class="section-title h4 mt-4">FAQ</h2>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Is EMI fixed for the entire loan?</h3>
+            <p class="mb-0">This result assumes a constant interest rate. Variable-rate facilities can change monthly EMI.</p>
+        </div>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Does this include processing fees?</h3>
+            <p class="mb-0">No. Only principal and interest are included in the output.</p>
+        </div>
+        <div class="faq-item">
+            <h3 class="h6">Can I model 0% interest?</h3>
+            <p class="mb-0">Yes. The calculator handles 0% by dividing principal equally across months.</p>
+        </div>
+    </section>
+
+    <section class="internal-links mt-4">
+        <h2 class="h5 section-title">Explore Other Sri Lanka Calculators</h2>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/salary-tax-calculator-sri-lanka-2026}">Salary Tax 2026</a>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Vehicle Import Duty</a>
+        <a class="btn btn-outline-primary mb-2" th:href="@{/epf-maturity-calculator-sri-lanka}">EPF Maturity</a>
+    </section>
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does this Sri Lanka home loan EMI calculator work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It applies the standard EMI formula using principal, annual interest, and tenure in months."}
+    },
+    {
+      "@type": "Question",
+      "name": "Does EMI include bank charges?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, it only includes principal and interest, excluding legal, processing, and insurance charges."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use this for variable-rate loans?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This estimator assumes fixed rate. For variable rates, recalculate with updated rates periodically."}
+    }
+  ]
+}
+</script>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

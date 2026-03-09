@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Sri Lanka Vehicle Import Duty Calculator</h1>
+        <p class="mb-0">Estimate CIF-based customs duty, PAL, excise, VAT, total tax, and final landed cost for imported vehicles.</p>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-lg-5">
+            <div class="card glass-card p-4">
+                <h2 class="h4 section-title mb-3">Vehicle Details</h2>
+                <form th:action="@{/vehicle-import-duty-calculator-sri-lanka}" th:object="${vehicleDutyRequest}" method="post" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">CIF Value (LKR)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{cifValue}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('cifValue')}" th:errors="*{cifValue}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Engine Capacity (cc)</label>
+                        <input type="number" min="1" step="1" class="form-control" th:field="*{engineCapacity}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('engineCapacity')}" th:errors="*{engineCapacity}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fuel Type</label>
+                        <select class="form-select" th:field="*{fuelType}">
+                            <option value="">Select fuel type</option>
+                            <option th:each="fuel : ${fuelTypes}" th:value="${fuel}" th:text="${fuel}"></option>
+                        </select>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('fuelType')}" th:errors="*{fuelType}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vehicle Type</label>
+                        <select class="form-select" th:field="*{vehicleType}">
+                            <option value="">Select vehicle type</option>
+                            <option th:each="type : ${vehicleTypes}" th:value="${type}" th:text="${type}"></option>
+                        </select>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('vehicleType')}" th:errors="*{vehicleType}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Calculate Import Duty</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card result-card p-4 mb-4" th:if="${result != null}">
+                <h2 class="h4 mb-3">Duty Summary</h2>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="small">Total Payable Tax</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.totalPayableTax, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Final Vehicle Cost</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.finalVehicleCost, 1, 2)}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result != null}">
+                <h3 class="h5 section-title mb-3">Tax Component Breakdown</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Rate</th>
+                            <th>Amount (LKR)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Customs Duty</td>
+                            <td th:text="${result.customsRate + '%'}"></td>
+                            <td th:text="${#numbers.formatDecimal(result.customsDuty, 1, 2)}"></td>
+                        </tr>
+                        <tr>
+                            <td>PAL</td>
+                            <td th:text="${result.palRate + '%'}"></td>
+                            <td th:text="${#numbers.formatDecimal(result.pal, 1, 2)}"></td>
+                        </tr>
+                        <tr>
+                            <td>Excise Duty</td>
+                            <td th:text="${result.exciseRate + '%'}"></td>
+                            <td th:text="${#numbers.formatDecimal(result.exciseDuty, 1, 2)}"></td>
+                        </tr>
+                        <tr>
+                            <td>VAT</td>
+                            <td th:text="${result.vatRate + '%'}"></td>
+                            <td th:text="${#numbers.formatDecimal(result.vat, 1, 2)}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result == null}">
+                <h2 class="h5 section-title">Import Duty Result Preview</h2>
+                <p class="mb-0">Submit the vehicle details to see tax composition and total landed cost.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card info-card p-4 mt-4">
+        <h2 class="section-title h4">How It Works</h2>
+        <p>The calculator applies simplified duty percentages to CIF value and computes customs duty, PAL, excise duty, and VAT in sequence.</p>
+
+        <h2 class="section-title h4 mt-4">Current Sri Lanka Tax Rules</h2>
+        <p>Real vehicle import taxes depend on periodic policy circulars, engine category, emissions profile, and concession status. This tool uses a transparent mock logic for planning and comparison only.</p>
+
+        <h2 class="section-title h4 mt-4">FAQ</h2>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Is this an official customs calculator?</h3>
+            <p class="mb-0">No. It is a simplified estimate model and not a substitute for customs clearance documents.</p>
+        </div>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Why do fuel type and engine capacity matter?</h3>
+            <p class="mb-0">Duty structures typically vary by powertrain and engine class, so the model adjusts rates using those inputs.</p>
+        </div>
+        <div class="faq-item">
+            <h3 class="h6">Does this include registration fees?</h3>
+            <p class="mb-0">No. Registration, compliance, logistics, and insurance costs are not included in this output.</p>
+        </div>
+    </section>
+
+    <section class="internal-links mt-4">
+        <h2 class="h5 section-title">Explore Other Sri Lanka Calculators</h2>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/salary-tax-calculator-sri-lanka-2026}">Salary Tax 2026</a>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/epf-maturity-calculator-sri-lanka}">EPF Maturity</a>
+        <a class="btn btn-outline-primary mb-2" th:href="@{/home-loan-calculator-sri-lanka}">Home Loan EMI</a>
+    </section>
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How is vehicle import duty calculated in this tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The tool applies simplified customs duty, PAL, excise, and VAT rates to CIF value based on fuel type, vehicle type, and engine capacity."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is this legally binding for customs declarations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, this is an estimate model for planning and should not be used as a legal declaration."}
+    },
+    {
+      "@type": "Question",
+      "name": "What is the final vehicle cost shown?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Final vehicle cost equals CIF value plus total calculated import taxes."}
+    }
+  ]
+}
+</script>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Privacy Policy</h1>
+        <p class="mb-0">Effective date: March 4, 2026</p>
+    </section>
+
+    <section class="card info-card p-4">
+        <h2 class="h5 section-title">Data Collection</h2>
+        <p>This portal runs stateless calculators and does not require account creation. Form values are processed per request and are not stored in a database.</p>
+
+        <h2 class="h5 section-title mt-4">Analytics and Advertising</h2>
+        <p>Google Analytics and Google AdSense placeholder scripts are included. If enabled in production, those services may collect usage data under their own policies.</p>
+
+        <h2 class="h5 section-title mt-4">Your Choices</h2>
+        <p class="mb-0">You may disable cookies in your browser settings. For privacy questions, contact <a href="mailto:hello@srilankafinancialtools.com">hello@srilankafinancialtools.com</a>.</p>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

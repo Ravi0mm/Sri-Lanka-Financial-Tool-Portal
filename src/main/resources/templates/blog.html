@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Sri Lanka Finance Blog</h1>
+        <p class="mb-0">Guides and explainers for personal finance decisions in Sri Lanka.</p>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-md-6">
+            <article class="card info-card h-100 p-4">
+                <h2 class="h5">How to Estimate PAYE in Sri Lanka for 2026</h2>
+                <p>Understand annualization, progressive slabs, and how bonus payments affect monthly deductions.</p>
+                <a th:href="@{/salary-tax-calculator-sri-lanka-2026}" class="btn btn-outline-primary mt-auto">Use Salary Tax Calculator</a>
+            </article>
+        </div>
+        <div class="col-md-6">
+            <article class="card info-card h-100 p-4">
+                <h2 class="h5">Vehicle Import Cost Planning Checklist</h2>
+                <p>Break down CIF, customs, PAL, excise, VAT, and practical add-on charges before importing a vehicle.</p>
+                <a th:href="@{/vehicle-import-duty-calculator-sri-lanka}" class="btn btn-outline-primary mt-auto">Use Vehicle Duty Calculator</a>
+            </article>
+        </div>
+        <div class="col-md-6">
+            <article class="card info-card h-100 p-4">
+                <h2 class="h5">EPF Growth Scenarios for Long-Term Retirement</h2>
+                <p>Compare how service length and annual return assumptions impact your final EPF maturity balance.</p>
+                <a th:href="@{/epf-maturity-calculator-sri-lanka}" class="btn btn-outline-primary mt-auto">Use EPF Calculator</a>
+            </article>
+        </div>
+        <div class="col-md-6">
+            <article class="card info-card h-100 p-4">
+                <h2 class="h5">What Changes EMI the Most: Rate, Tenure, or Loan Size?</h2>
+                <p>See how small changes in rate and tenure alter total interest across the full home loan lifecycle.</p>
+                <a th:href="@{/home-loan-calculator-sri-lanka}" class="btn btn-outline-primary mt-auto">Use Home Loan Calculator</a>
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Sri Lanka EPF Maturity Calculator</h1>
+        <p class="mb-0">Estimate retirement balance using employee 8% and employer 12% contributions with annual compounding.</p>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-lg-5">
+            <div class="card glass-card p-4">
+                <h2 class="h4 section-title mb-3">Contribution Inputs</h2>
+                <form th:action="@{/epf-maturity-calculator-sri-lanka}" th:object="${epfRequest}" method="post" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Monthly Salary (LKR)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{monthlySalary}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('monthlySalary')}" th:errors="*{monthlySalary}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Years of Service</label>
+                        <input type="number" min="1" max="60" class="form-control" th:field="*{yearsOfService}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('yearsOfService')}" th:errors="*{yearsOfService}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Average Annual Interest Rate (%)</label>
+                        <input type="number" min="0" max="50" step="0.01" class="form-control" th:field="*{annualInterestRate}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('annualInterestRate')}" th:errors="*{annualInterestRate}"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Calculate EPF Maturity</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card result-card p-4" th:if="${result != null}">
+                <h2 class="h4 mb-3">EPF Maturity Summary</h2>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <div class="small">Total Contribution</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.totalContribution, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="small">Interest Earned</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.totalInterestEarned, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="small">Final Maturity</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.finalMaturityAmount, 1, 2)}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result == null}">
+                <h2 class="h5 section-title">EPF Result Preview</h2>
+                <p class="mb-0">Enter salary, years of service, and interest rate to project your EPF maturity value.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card info-card p-4 mt-4">
+        <h2 class="section-title h4">How It Works</h2>
+        <p>The model adds annual EPF contributions equal to 20% of yearly salary (8% employee + 12% employer), then applies annual compounding for each service year.</p>
+
+        <h2 class="section-title h4 mt-4">Current Sri Lanka Tax Rules</h2>
+        <p>EPF treatment and retirement withdrawals can be affected by policy updates, tax circulars, and fund administration rules. Use this output for planning and validate with current EPF guidance before action.</p>
+
+        <h2 class="section-title h4 mt-4">FAQ</h2>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Which contribution rates are used?</h3>
+            <p class="mb-0">Employee 8% and employer 12%, totaling 20% of monthly salary.</p>
+        </div>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Can I change the interest rate?</h3>
+            <p class="mb-0">Yes. The default is 8%, but you can adjust it to model different long-term scenarios.</p>
+        </div>
+        <div class="faq-item">
+            <h3 class="h6">Does this include ETF?</h3>
+            <p class="mb-0">No. This calculator estimates EPF only.</p>
+        </div>
+    </section>
+
+    <section class="internal-links mt-4">
+        <h2 class="h5 section-title">Explore Other Sri Lanka Calculators</h2>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/salary-tax-calculator-sri-lanka-2026}">Salary Tax 2026</a>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Vehicle Import Duty</a>
+        <a class="btn btn-outline-primary mb-2" th:href="@{/home-loan-calculator-sri-lanka}">Home Loan EMI</a>
+    </section>
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does this EPF maturity calculator work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It uses monthly salary, years of service, and annual interest to project EPF growth with yearly compounding."}
+    },
+    {
+      "@type": "Question",
+      "name": "What contribution rates are assumed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The calculator applies employee 8% plus employer 12% contributions."}
+    },
+    {
+      "@type": "Question",
+      "name": "Is this an official EPF statement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It is an independent estimator for personal planning."}
+    }
+  ]
+}
+</script>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>
