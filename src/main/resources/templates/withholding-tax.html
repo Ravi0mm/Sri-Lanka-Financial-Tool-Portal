@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: seoHead}"></head>
+<body>
+<div th:replace="~{fragments/navbar :: mainNav}"></div>
+
+<main class="container py-4 py-lg-5">
+    <section class="portal-hero mb-4">
+        <h1 class="display-6 fw-bold mb-2">Sri Lanka Withholding Tax Calculator</h1>
+        <p class="mb-0">Estimate withholding tax (WHT) on payments by entering the gross amount and applicable rate.</p>
+    </section>
+
+    <section class="row g-4">
+        <div class="col-lg-5">
+            <div class="card glass-card p-4">
+                <h2 class="h4 section-title mb-3">Enter Payment Details</h2>
+                <form th:action="@{/withholding-tax-calculator-sri-lanka}" th:object="${withholdingTaxRequest}" method="post" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Gross Payment Amount (LKR)</label>
+                        <input type="number" min="0" step="0.01" class="form-control" th:field="*{grossPaymentAmount}">
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('grossPaymentAmount')}" th:errors="*{grossPaymentAmount}"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Category</label>
+                        <select class="form-select" th:field="*{presetCategory}" id="wht-category">
+                            <option th:each="category : ${whtCategories}"
+                                    th:value="${category.code}"
+                                    th:text="${category.label}"
+                                    th:attr="data-rate=${category.rate != null ? category.rate : ''},data-threshold=${category.thresholdAmount != null ? category.thresholdAmount : ''},data-threshold-note=${category.thresholdNote != null ? category.thresholdNote : ''},data-custom=${category.requiresCustomRate}">
+                            </option>
+                        </select>
+                        <div class="form-text" id="wht-category-note">Select a category to apply a preset rate, or choose Custom to enter your own rate.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Withholding Rate (%)</label>
+                        <input type="number" min="0" max="100" step="0.01" class="form-control" id="wht-rate" th:field="*{withholdingRate}">
+                        <div class="form-text" id="wht-rate-help">Use the rate provided in your contract or the latest Inland Revenue guidance.</div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('withholdingRate')}" th:errors="*{withholdingRate}"></div>
+                    </div>
+                    <p class="small text-muted mb-3">Preset categories follow the Inland Revenue Act No. 24 of 2017 (as amended). Always confirm the latest official guidance for exemptions and updated rates.</p>
+                    <button type="submit" class="btn btn-primary w-100">Calculate WHT</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card result-card p-4 mb-4" th:if="${result != null}">
+                <h2 class="h4 mb-3">Withholding Tax Summary</h2>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="small">Gross Payment</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.grossPaymentAmount, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Withholding Rate</div>
+                        <div class="kpi-value"><span th:text="${#numbers.formatDecimal(result.withholdingRate, 1, 2) + '%'}"></span></div>
+                    </div>
+                    <div class="col-sm-6" th:if="${result.thresholdAmount != null}">
+                        <div class="small">Taxable Amount (above LKR <span th:text="${#numbers.formatDecimal(result.thresholdAmount, 1, 2)}"></span>)</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.taxableAmount, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Tax Withheld</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.taxWithheld, 1, 2)}"></span></div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small">Net Payment</div>
+                        <div class="kpi-value">LKR <span th:text="${#numbers.formatDecimal(result.netPaymentAmount, 1, 2)}"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card info-card p-4" th:if="${result == null}">
+                <h2 class="h5 section-title">WHT Result Preview</h2>
+                <p class="mb-0">Submit the payment amount and rate to see the tax withheld and net payment instantly.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card info-card p-4 mt-4">
+        <h2 class="section-title h4">How It Works</h2>
+        <p>The calculator multiplies the gross payment amount by the withholding rate to estimate the tax to be withheld. For resident service fees that carry a monthly threshold, only the amount above the threshold is taxed.</p>
+
+        <h2 class="section-title h4 mt-4">Choosing the Correct Rate</h2>
+        <p>Withholding tax rates in Sri Lanka vary by income type, payer status, and residency. Use the rate in your contract or the latest Inland Revenue Department guidance.</p>
+
+        <h2 class="section-title h4 mt-4">FAQ</h2>
+        <div class="faq-item mb-3">
+            <h3 class="h6">What is withholding tax (WHT)?</h3>
+            <p class="mb-0">WHT is tax deducted at source on certain payments such as interest, rent, or professional fees.</p>
+        </div>
+        <div class="faq-item mb-3">
+            <h3 class="h6">Does this calculator handle exemptions?</h3>
+            <p class="mb-0">No. Enter 0% if the payment is exempt, or confirm the correct rate with official guidance.</p>
+        </div>
+        <div class="faq-item">
+            <h3 class="h6">Is the net payment the amount received?</h3>
+            <p class="mb-0">Yes, it shows the gross payment minus the tax withheld at source.</p>
+        </div>
+    </section>
+
+    <section class="internal-links mt-4">
+        <h2 class="h5 section-title">Explore Other Sri Lanka Calculators</h2>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/salary-tax-calculator-sri-lanka-2026}">Salary Tax 2026</a>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/vehicle-import-duty-calculator-sri-lanka}">Vehicle Import Duty</a>
+        <a class="btn btn-outline-primary me-2 mb-2" th:href="@{/epf-maturity-calculator-sri-lanka}">EPF Maturity</a>
+        <a class="btn btn-outline-primary mb-2" th:href="@{/home-loan-calculator-sri-lanka}">Home Loan EMI</a>
+    </section>
+</main>
+
+<script>
+    (() => {
+        const categorySelect = document.getElementById("wht-category");
+        const rateInput = document.getElementById("wht-rate");
+        const rateHelp = document.getElementById("wht-rate-help");
+        const categoryNote = document.getElementById("wht-category-note");
+
+        if (!categorySelect || !rateInput) {
+            return;
+        }
+
+        const updateRate = () => {
+            const option = categorySelect.options[categorySelect.selectedIndex];
+            const rate = option.dataset.rate;
+            const thresholdNote = option.dataset.thresholdNote;
+            const isCustom = option.dataset.custom === "true" || rate === "";
+
+            if (isCustom) {
+                rateInput.readOnly = false;
+                if (rateInput.dataset.autofill === "true") {
+                    rateInput.value = "";
+                }
+                rateInput.dataset.autofill = "false";
+            } else {
+                rateInput.value = rate;
+                rateInput.readOnly = true;
+                rateInput.dataset.autofill = "true";
+            }
+
+            if (thresholdNote && thresholdNote.trim().length > 0) {
+                rateHelp.textContent = thresholdNote;
+            } else {
+                rateHelp.textContent = "Use the rate provided in your contract or the latest Inland Revenue guidance.";
+            }
+
+            if (option.dataset.custom === "true" && rate === "") {
+                categoryNote.textContent = "This category uses a rate prescribed by regulations. Enter the applicable rate.";
+            } else {
+                categoryNote.textContent = "Select a category to apply a preset rate, or choose Custom to enter your own rate.";
+            }
+        };
+
+        updateRate();
+        categorySelect.addEventListener("change", updateRate);
+    })();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does the Sri Lanka Withholding Tax Calculator work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It multiplies the gross payment amount by the withholding tax rate to estimate tax withheld and net payment."}
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I find the correct WHT rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the rate provided in your contract or the latest Inland Revenue Department guidance for the payment type."}
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use this for exempt payments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Enter 0% if the payment is exempt and confirm the exemption conditions separately."}
+    }
+  ]
+}
+</script>
+
+<div th:replace="~{fragments/footer :: mainFooter}"></div>
+</body>
+</html>

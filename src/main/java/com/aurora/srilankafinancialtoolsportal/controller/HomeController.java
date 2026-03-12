@@ -18,8 +18,8 @@ public class HomeController {
     public String home(Model model) {
         seoUtil.addMeta(
                 model,
-                "Sri Lanka Financial Tools Portal | Tax, EPF, Vehicle Duty & Home Loan Calculators",
-                "Use free Sri Lanka financial calculators for salary tax 2026, vehicle import duty, EPF maturity, and home loan EMI.",
+                "Sri Lanka Financial Tools Portal | Tax, WHT, EPF, Vehicle Duty & Home Loan Calculators",
+                "Use free Sri Lanka financial calculators for salary tax 2026, withholding tax, vehicle import duty, EPF maturity, and home loan EMI.",
                 "/"
         );
         model.addAttribute("activePage", "home");
@@ -31,7 +31,7 @@ public class HomeController {
         seoUtil.addMeta(
                 model,
                 "Sri Lanka Finance Blog | Tax and Loan Guides",
-                "Read practical Sri Lanka finance guides on PAYE tax 2026, EPF planning, vehicle duty, and home loan strategy.",
+                "Read practical Sri Lanka finance guides on PAYE tax 2026, withholding tax, EPF planning, vehicle duty, and home loan strategy.",
                 "/blog"
         );
         model.addAttribute("activePage", "blog");
